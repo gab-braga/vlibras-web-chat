@@ -21,6 +21,7 @@ module.exports = {
       patterns: [
         { from: 'src/unity', to: 'unity' },
         { from: 'src/css', to: 'css' },
+        { from: 'src/assets', to: 'assets' },
         { from: 'src/index.html', to: 'index.html' },
       ],
     }),
