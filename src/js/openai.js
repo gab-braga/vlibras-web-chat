@@ -1,7 +1,14 @@
 const API_KEY = '';
 
-async function questionForGPT(question) {
-  const prompt = `Responda à seguinte pergunta com o mínimo de palavras possível, preferencialmente uma única palavra. Não use abreviações ou símbolos; substitua-os por suas formas completas (por exemplo, 'm' por 'metro'). Mantenha o significado intacto. Pergunta: \"${question}?\"`;
+async function questionForGPT(question = '') {
+  if (!question) throw new Error('Question is null.');
+
+  const trimmedQuestion = question.trim();
+  const formattedQuestion = trimmedQuestion.endsWith('?')
+    ? trimmedQuestion
+    : trimmedQuestion + '?';
+
+  const prompt = `Responda à seguinte pergunta em pt-BR com o mínimo de palavras possível, preferencialmente uma única palavra. Não use abreviações ou símbolos; substitua-os por suas formas completas (por exemplo, 'm' por 'metro'). Mantenha o significado intacto. Pergunta: \"${formattedQuestion}\"`;
 
   const data = {
     model: 'gpt-4o-mini',

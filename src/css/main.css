@@ -7,6 +7,7 @@
 :root {
   --primary-color: dodgerblue;
   --primary-active: #1473d3;
+  --primary-disabled: #4584c3;
   --rounded: 6px;
   --font: 'Ubuntu', Arial, Helvetica, sans-serif;
   --border: 2px solid var(--primary-color);
@@ -74,20 +75,18 @@ textarea.input {
 
 .button {
   cursor: pointer;
-  line-height: 24px;
   background-color: var(--primary-color);
   color: #ffffff;
   border: none;
   transition: background-color 0.2s ease-out;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
 }
 
 .button:hover {
   background-color: var(--primary-active);
+}
+
+.button:disabled {
+  background-color: var(--primary-disabled);
 }
 
 .content {
