@@ -1,31 +1,31 @@
-var window = require("window");
-var assign = require("object-assign");
-var inherits = require("inherits");
-var path = require("path");
-var url = require("url-join");
-var EventEmitter = require("events").EventEmitter;
+const window = require('window');
+const assign = require('object-assign');
+const inherits = require('inherits');
+const url = require('url-join');
+const EventEmitter = require('events').EventEmitter;
 
-var config = require("./config.js");
-var PlayerManagerAdapter = require("./PlayerManagerAdapter.js");
-var GlosaTranslator = require("./GlosaTranslator.js");
-var globalGlosaLenght = "";
+const config = require('./config.js');
+const PlayerManagerAdapter = require('./PlayerManagerAdapter.js');
+const GlosaTranslator = require('./GlosaTranslator.js');
 
-var document = window.document;
-var location = window.location;
+const document = window.document;
+const location = window.location;
+
+let globalGlosaLenght = '';
 
 const STATUSES = {
-  idle: "idle",
-  preparing: "preparing",
-  playing: "playing",
+  idle: 'idle',
+  preparing: 'preparing',
+  playing: 'playing',
 };
 
 function Player(options) {
   this.options = assign(
     {
       translator: config.translatorUrl,
-      targetPath: "target",
+      targetPath: 'unity',
     },
-    options
+    options,
   );
 
   this.playerManager = new PlayerManagerAdapter();
@@ -39,11 +39,11 @@ function Player(options) {
   this.gameContainer = null;
   this.player = null;
   this.status = STATUSES.idle;
-  this.region = "BR";
+  this.region = 'BR';
 
-  this.playerManager.on("load", () => {
+  this.playerManager.on('load', () => {
     this.loaded = true;
-    this.emit("load");
+    this.emit('load');
 
     this.playerManager.setBaseUrl(config.dictionaryUrl);
 
@@ -54,40 +54,40 @@ function Player(options) {
     }
   });
 
-  this.playerManager.on("progress", (progress) => {
-    this.emit("animation:progress", progress);
+  this.playerManager.on('progress', (progress) => {
+    this.emit('animation:progress', progress);
   });
 
-  this.playerManager.on("stateChange", (isPlaying, isPaused, isLoading) => {
+  this.playerManager.on('stateChange', (isPlaying, isPaused, isLoading) => {
     if (isPaused) {
-      this.emit("animation:pause");
+      this.emit('animation:pause');
     } else if (isPlaying && !isPaused) {
-      this.emit("animation:play");
+      this.emit('animation:play');
       this.changeStatus(STATUSES.playing);
     } else if (!isPlaying && !isLoading) {
-      this.emit("animation:end");
+      this.emit('animation:end');
       this.changeStatus(STATUSES.idle);
     }
   });
 
-  this.playerManager.on("CounterGloss", (counter, glosaLenght) => {
-    this.emit("response:glosa", counter, glosaLenght);
+  this.playerManager.on('CounterGloss', (counter, glosaLenght) => {
+    this.emit('response:glosa', counter, glosaLenght);
     globalGlosaLenght = glosaLenght;
   });
 
-  this.playerManager.on("GetAvatar", (avatar) => {
-    this.emit("GetAvatar", avatar);
+  this.playerManager.on('GetAvatar', (avatar) => {
+    this.emit('GetAvatar', avatar);
   });
 
-  this.playerManager.on("FinishWelcome", (bool) => {
-    this.emit("stop:welcome", bool);
+  this.playerManager.on('FinishWelcome', (bool) => {
+    this.emit('stop:welcome', bool);
   });
 }
 
 inherits(Player, EventEmitter);
 
 Player.prototype.translate = function (text, { isEnabledStats = true } = {}) {
-  this.emit("translate:start");
+  this.emit('translate:start');
 
   if (this.loaded) {
     this.stop();
@@ -99,31 +99,33 @@ Player.prototype.translate = function (text, { isEnabledStats = true } = {}) {
     if (error) {
       this.play(text.toUpperCase());
       this.emit(
-        "error",
-        error === "timeout_error" ? error : "translation_error"
+        'error',
+        error === 'timeout_error' ? error : 'translation_error',
       );
       return;
     }
 
     this.play(gloss, { fromTranslation: true, isEnabledStats });
-    this.emit("translate:end");
+    this.emit('translate:end');
   });
 };
 
 Player.prototype.play = function (
   glosa,
-  { fromTranslation = false, isEnabledStats = true } = {}
+  { fromTranslation = false, isEnabledStats = true } = {},
 ) {
   if (!isEnabledStats && isDefaultUrl.bind(this)()) {
-    this.playerManager.setBaseUrl(config.dictionaryStaticUrl + this.region + "/");
+    this.playerManager.setBaseUrl(
+      config.dictionaryStaticUrl + this.region + '/',
+    );
   } else if (isEnabledStats && !isDefaultUrl.bind(this)()) {
-    this.playerManager.setBaseUrl(config.dictionaryUrl + this.region + "/");
+    this.playerManager.setBaseUrl(config.dictionaryUrl + this.region + '/');
   }
 
   function isDefaultUrl() {
     return (
       this.playerManager.currentBaseUrl ===
-      config.dictionaryUrl + this.region + "/"
+      config.dictionaryUrl + this.region + '/'
     );
   }
 
@@ -138,7 +140,7 @@ Player.prototype.play = function (
 
 Player.prototype.playWellcome = function () {
   this.playerManager.playWellcome();
-  this.emit("start:welcome");
+  this.emit('start:welcome');
 };
 
 Player.prototype.continue = function () {
@@ -175,15 +177,15 @@ Player.prototype.toggleSubtitle = function () {
 
 Player.prototype.setRegion = function (region) {
   this.region = region;
-  this.playerManager.setBaseUrl(config.dictionaryUrl + region + "/");
+  this.playerManager.setBaseUrl(config.dictionaryUrl + region + '/');
 };
 
 Player.prototype.load = function (wrapper) {
-  this.gameContainer = document.createElement("div");
-  this.gameContainer.setAttribute("id", "gameContainer");
-  this.gameContainer.classList.add("emscripten");
+  this.gameContainer = document.createElement('div');
+  this.gameContainer.setAttribute('id', 'gameContainer');
+  this.gameContainer.classList.add('emscripten');
 
-  if ("function" == typeof this.options.progress) {
+  if ('function' == typeof this.options.progress) {
     this.progress = new this.options.progress(wrapper);
   }
 
@@ -193,26 +195,26 @@ Player.prototype.load = function (wrapper) {
 };
 
 Player.prototype._getTargetScript = function () {
-  return url(this.options.targetPath, "UnityLoader.js");
+  return url(this.options.targetPath, 'UnityLoader.js');
   //return path.join(this.options.targetPath, 'UnityLoader.js');
 };
 
 Player.prototype._initializeTarget = function () {
   //const targetSetup = path.join(this.options.targetPath, 'playerweb.json');
-  const targetSetup = url(this.options.targetPath, "playerweb.json");
-  const targetScript = document.createElement("script");
+  const targetSetup = url(this.options.targetPath, 'playerweb.json');
+  const targetScript = document.createElement('script');
 
   targetScript.src = this._getTargetScript();
   targetScript.onload = () => {
-    this.player = UnityLoader.instantiate("gameContainer", targetSetup, {
+    this.player = UnityLoader.instantiate('gameContainer', targetSetup, {
       compatibilityCheck: (_, accept, deny) => {
         if (UnityLoader.SystemInfo.hasWebGL) {
           return accept();
         }
 
-        this.onError("unsupported");
-        alert("Seu navegador não suporta WEBGL");
-        console.error("Seu navegador não suporta WEBGL");
+        this.onError('unsupported');
+        alert('Seu navegador não suporta WEBGL');
+        console.error('Seu navegador não suporta WEBGL');
         deny();
       },
     });
@@ -228,7 +230,7 @@ Player.prototype.changeStatus = function (status) {
     case STATUSES.idle:
       if (this.status === STATUSES.playing) {
         this.status = status;
-        this.emit("gloss:end", globalGlosaLenght);
+        this.emit('gloss:end', globalGlosaLenght);
       }
       break;
 
@@ -239,7 +241,7 @@ Player.prototype.changeStatus = function (status) {
     case STATUSES.playing:
       if (this.status === STATUSES.preparing) {
         this.status = status;
-        this.emit("gloss:start");
+        this.emit('gloss:start');
       }
       break;
   }

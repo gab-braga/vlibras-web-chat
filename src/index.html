@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLibras Translate</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+    <form id="form">
+        <input type="text" id="input" placeholder="Digite um texto" autocomplete="off">
+    </form>
+
+    <div id="wrapper"></div>
+
+    <script src="./vlibras.js"></script>
+    <script>
+        const wrapper = document.getElementById('wrapper');
+        const player = new VLibras.Player({
+            target: { name: 'rnp_webgl', path: './unity' }
+        });
+
+        player.on('load', function () {
+            console.log('Player loaded');
+        });
+
+        player.load(wrapper);
+    </script>
+
+    <script>
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            const texto = input.value;
+            player.translate(texto)
+        })
+    </script>
+</body>
+
+</html>

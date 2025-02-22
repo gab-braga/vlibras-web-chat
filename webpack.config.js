@@ -1,18 +1,28 @@
-var path = require('path');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = {
+  mode: 'production',
   entry: path.resolve('./src/index.js'),
   output: {
     filename: 'vlibras.js',
-    path: path.resolve('./build')
+    path: path.resolve('./dist'),
   },
   externals: {
-    'window': 'window'
+    window: 'window',
+  },
+  resolve: {
+    fallback: {
+      path: require.resolve('path-browserify'),
+    },
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: 'src/target', to: 'target' }
-    ])
-  ]
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/unity', to: 'unity' },
+        { from: 'src/css', to: 'css' },
+        { from: 'src/index.html', to: 'index.html' },
+      ],
+    }),
+  ],
 };

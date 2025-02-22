@@ -1,8 +1,8 @@
-var window = require('window');
-var Player = require('./Player.js');
+const window = require('window');
+const Player = require('./tools/Player.js');
 
-var VLibras = {
-  Player: Player
+const VLibras = {
+  Player: Player,
 };
 
 window.VLibras = VLibras;
