@@ -45,16 +45,7 @@
         player.load(wrapper);
     </script>
 
-    <script>
-        const form = document.getElementById("form");
-        const input = document.getElementById("input");
-
-        form.addEventListener("submit", e => {
-            e.preventDefault();
-            const texto = input.value;
-            player.translate(texto)
-        })
-    </script>
+    <script src="./js/uiControl.js" type="module"></script>
 </body>
 
 </html>

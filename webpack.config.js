@@ -22,6 +22,7 @@ module.exports = {
         { from: 'src/unity', to: 'unity' },
         { from: 'src/css', to: 'css' },
         { from: 'src/assets', to: 'assets' },
+        { from: 'src/js', to: 'js' },
         { from: 'src/index.html', to: 'index.html' },
       ],
     }),

@@ -64,6 +64,7 @@ h1 {
 
 textarea.input {
   resize: vertical;
+  min-height: 78px;
   max-height: 200px;
 }
 
