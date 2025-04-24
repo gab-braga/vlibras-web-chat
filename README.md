@@ -20,6 +20,10 @@ This project is a component of VLibras Web (Plugins and Widget).
 * Mateus Pires - <mateuspires@lavid.ufpb.br>
 * Suanny Fabyne - <suanny@lavid.ufpb.br>
 * Thiago Filipe - <thiago.filipe@lavid.ufpb.br>
+* Gabriel Braga
+
+## GUI
+![image](https://github.com/user-attachments/assets/9072f691-2145-4a85-b92b-cafbee8584b2)
 
 ## License
 
